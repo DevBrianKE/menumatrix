@@ -2,7 +2,7 @@ from sqlalchemy import Column, Integer, String, Float, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
 from datetime import datetime
 
-from lib.models import Base  # your declarative_base
+from lib.models import Base  
 
 class MenuItem(Base):
     __tablename__ = 'menu_items'
