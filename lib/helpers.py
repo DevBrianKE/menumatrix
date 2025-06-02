@@ -1,3 +1,5 @@
+from typing import List  # 👈 Add this import at the top
+
 from lib.db.session import get_session
 from lib.models.models import MenuItem, Order, OrderItem
 from sqlalchemy.exc import NoResultFound
@@ -18,7 +20,7 @@ def add_menu_item(name: str, price: float, description: str = None) -> MenuItem:
     finally:
         session.close()
 
-def list_menu_items() -> list[MenuItem]:
+def list_menu_items() -> List[MenuItem]:  # 👈 Changed
     """
     Retrieve all menu items from the database.
     """
@@ -73,7 +75,7 @@ def add_item_to_order(order_id: int, menu_item_id: int, quantity: int = 1):
     finally:
         session.close()
 
-def get_order_items(order_id: int) -> list[OrderItem]:
+def get_order_items(order_id: int) -> List[OrderItem]:  # 👈 Changed
     """
     Retrieve all OrderItems for a specific order.
     """
