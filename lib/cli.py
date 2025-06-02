@@ -1,28 +1,67 @@
-# lib/cli.py
-
-from helpers import (
-    exit_program,
-    helper_1
+from lib.helpers import (
+    add_menu_item, list_menu_items, create_order,
+    add_item_to_order, get_order_items, exit_program
 )
 
+def print_menu():
+    print("\n=== Menu Matrix CLI ===")
+    print("1. Add a Menu Item")
+    print("2. List Menu Items")
+    print("3. Create New Order")
+    print("4. Add Item to Order")
+    print("5. View Order Items")
+    print("6. Exit")
 
 def main():
     while True:
-        menu()
-        choice = input("> ")
-        if choice == "0":
+        print_menu()
+        choice = input("Enter your choice (1-6): ").strip()
+
+        if choice == "1":
+            name = input("Enter menu item name: ").strip()
+            price = float(input("Enter price: "))
+            description = input("Enter description (optional): ").strip() or None
+            item = add_menu_item(name, price, description)
+            print(f"Added MenuItem: {item}")
+
+        elif choice == "2":
+            items = list_menu_items()
+            if not items:
+                print("No menu items found.")
+            else:
+                print("Menu Items:")
+                for item in items:
+                    print(f"  ID: {item.id}, Name: {item.name}, Price: {item.price}, Description: {item.description}")
+
+        elif choice == "3":
+            order = create_order()
+            print(f"Created Order: {order}")
+
+        elif choice == "4":
+            order_id = int(input("Enter Order ID: "))
+            menu_item_id = int(input("Enter Menu Item ID to add: "))
+            quantity = int(input("Enter quantity (default 1): ") or "1")
+            try:
+                add_item_to_order(order_id, menu_item_id, quantity)
+                print(f"Added item {menu_item_id} x{quantity} to order {order_id}")
+            except ValueError as ve:
+                print(f"Error: {ve}")
+
+        elif choice == "5":
+            order_id = int(input("Enter Order ID to view: "))
+            items = get_order_items(order_id)
+            if not items:
+                print(f"No items found for order {order_id}")
+            else:
+                print(f"Items in Order {order_id}:")
+                for oi in items:
+                    print(f"  MenuItem ID: {oi.menu_item_id}, Quantity: {oi.quantity}")
+
+        elif choice == "6":
             exit_program()
-        elif choice == "1":
-            helper_1()
+
         else:
-            print("Invalid choice")
-
-
-def menu():
-    print("Please select an option:")
-    print("0. Exit the program")
-    print("1. Some useful function")
-
+            print("Invalid choice, please enter a number between 1 and 6.")
 
 if __name__ == "__main__":
     main()
