@@ -1,13 +1,9 @@
-from typing import List  # 👈 Add this import at the top
-
+from typing import List
 from lib.db.session import get_session
 from lib.models.models import MenuItem, Order, OrderItem
 from sqlalchemy.exc import NoResultFound
 
 def add_menu_item(name: str, price: float, description: str = None) -> MenuItem:
-    """
-    Create and add a new MenuItem to the database.
-    """
     session = get_session()
     try:
         menu_item = MenuItem(name=name, price=price, description=description)
@@ -20,21 +16,14 @@ def add_menu_item(name: str, price: float, description: str = None) -> MenuItem:
     finally:
         session.close()
 
-def list_menu_items() -> List[MenuItem]:  # 👈 Changed
-    """
-    Retrieve all menu items from the database.
-    """
+def list_menu_items() -> List[MenuItem]:
     session = get_session()
     try:
-        items = session.query(MenuItem).all()
-        return items
+        return session.query(MenuItem).all()
     finally:
         session.close()
 
 def create_order() -> Order:
-    """
-    Create a new Order with status 'pending'.
-    """
     session = get_session()
     try:
         order = Order()
@@ -48,10 +37,6 @@ def create_order() -> Order:
         session.close()
 
 def add_item_to_order(order_id: int, menu_item_id: int, quantity: int = 1):
-    """
-    Add an OrderItem linking an order and a menu item.
-    If the item already exists in the order, increase quantity.
-    """
     session = get_session()
     try:
         order = session.query(Order).filter(Order.id == order_id).one()
@@ -65,7 +50,6 @@ def add_item_to_order(order_id: int, menu_item_id: int, quantity: int = 1):
         else:
             new_order_item = OrderItem(order_id=order_id, menu_item_id=menu_item_id, quantity=quantity)
             session.add(new_order_item)
-
         session.commit()
     except NoResultFound:
         raise ValueError(f"Order with id {order_id} or MenuItem with id {menu_item_id} does not exist.")
@@ -75,14 +59,31 @@ def add_item_to_order(order_id: int, menu_item_id: int, quantity: int = 1):
     finally:
         session.close()
 
-def get_order_items(order_id: int) -> List[OrderItem]:  # 👈 Changed
-    """
-    Retrieve all OrderItems for a specific order.
-    """
+def get_order_items(order_id: int) -> List[OrderItem]:
     session = get_session()
     try:
-        items = session.query(OrderItem).filter(OrderItem.order_id == order_id).all()
-        return items
+        return session.query(OrderItem).filter(OrderItem.order_id == order_id).all()
+    finally:
+        session.close()
+
+def get_order_details(order_id: int) -> List[dict]:
+    """Fetch full order details: item name, price, quantity, and subtotal."""
+    session = get_session()
+    try:
+        order_items = session.query(OrderItem).filter(OrderItem.order_id == order_id).all()
+        details = []
+        for item in order_items:
+            name = item.menu_item.name
+            price = item.menu_item.price
+            quantity = item.quantity
+            total = price * quantity
+            details.append({
+                "name": name,
+                "price": price,
+                "quantity": quantity,
+                "subtotal": total
+            })
+        return details
     finally:
         session.close()
 

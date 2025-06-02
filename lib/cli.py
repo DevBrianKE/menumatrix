@@ -1,6 +1,11 @@
 from lib.helpers import (
-    add_menu_item, list_menu_items, create_order,
-    add_item_to_order, get_order_items, exit_program
+    add_menu_item,
+    list_menu_items,
+    create_order,
+    add_item_to_order,
+    get_order_items,
+    get_order_details,
+    exit_program
 )
 
 def print_menu():
@@ -49,13 +54,17 @@ def main():
 
         elif choice == "5":
             order_id = int(input("Enter Order ID to view: "))
-            items = get_order_items(order_id)
-            if not items:
+            details = get_order_details(order_id)
+
+            if not details:
                 print(f"No items found for order {order_id}")
             else:
-                print(f"Items in Order {order_id}:")
-                for oi in items:
-                    print(f"  MenuItem ID: {oi.menu_item_id}, Quantity: {oi.quantity}")
+                print(f"\nItems in Order {order_id}:")
+                grand_total = 0
+                for item in details:
+                    print(f"- {item['name']} | Qty: {item['quantity']} | Price: {item['price']:.2f} | Subtotal: {item['subtotal']:.2f}")
+                    grand_total += item["subtotal"]
+                print(f"\nGrand Total: {grand_total:.2f}")
 
         elif choice == "6":
             exit_program()
