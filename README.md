@@ -41,3 +41,79 @@
 ├── Pipfile.lock         # Locked Python dependency versions
 ├── README.md            # Project documentation
 └── your_database_name.db # Legacy or renamed database (can be ignored)
+```
+## 1. How to Run the App
+### Install dependencies:
+```
+pipenv install
+pipenv shell
+```
+## 2. Run the database migrations:
+```
+alembic upgrade head
+```
+## 3. Start the CLI:
+```
+python lib/cli.py
+```
+
+## Features
+- View menu items
+
+- Add new menu items
+
+- Place new orders
+
+- View existing orders
+
+- Delete menu items or orders
+
+## Key Files and Their Roles
+lib/cli.py: Main entry point of the app. Contains the main() loop which displays a menu and routes user input to helper functions.
+```
+def main():
+    while True:
+        menu()
+        choice = input("> ")
+        if choice == "0":
+            exit_program()
+        elif choice == "1":
+            view_menu()
+```
+
+lib/helpers.py: Contains all helper functions called from the CLI, such as view_menu(), add_menu_item(), and place_order().
+```
+def view_menu():
+    items = session.query(MenuItem).all()
+    for item in items:
+        print(item)
+```
+lib/models/models.py: Defines the database models using SQLAlchemy.
+
+```
+class MenuItem(Base):
+    __tablename__ = 'menu_items'
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
+    price = Column(Float)
+    
+```
+lib/db/session.py: Creates and exposes the SQLAlchemy session for use across your app.
+
+## Database Migrations with Alembic
+To make changes to your database models:
+
+1. Modify your models in models.py
+
+2. Generate a new migration:
+```
+alembic revision --autogenerate -m "Add new field to MenuItem"
+```
+
+3. Apply the migration:
+```
+alembic upgrade head
+```
+## Author
+Kipchumba Brian 
+
