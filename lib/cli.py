@@ -7,6 +7,7 @@ from lib.helpers import (
     get_order_details,
     exit_program
 )
+from tabulate import tabulate
 
 def print_menu():
     print("\n=== Menu Matrix CLI ===")
@@ -24,47 +25,82 @@ def main():
 
         if choice == "1":
             name = input("Enter menu item name: ").strip()
-            price = float(input("Enter price: "))
+            try:
+                price = float(input("Enter price: "))
+            except ValueError:
+                print("Invalid price. Please enter a numeric value.")
+                continue
             description = input("Enter description (optional): ").strip() or None
-            item = add_menu_item(name, price, description)
-            print(f"Added MenuItem: {item}")
+            try:
+                item = add_menu_item(name, price, description)
+                print(f"Added MenuItem: {item}")
+            except Exception as e:
+                print(f"Error adding menu item: {e}")
 
         elif choice == "2":
             items = list_menu_items()
             if not items:
                 print("No menu items found.")
             else:
-                print("Menu Items:")
+                table = []
                 for item in items:
-                    print(f"  ID: {item.id}, Name: {item.name}, Price: {item.price}, Description: {item.description}")
+                    table.append([
+                        item.id,
+                        item.name,
+                        f"{item.price:.2f}",
+                        item.description or ""
+                    ])
+                headers = ["ID", "Name", "Price ($)", "Description"]
+                print("\nMenu Items:")
+                print(tabulate(table, headers=headers, tablefmt="fancy_grid"))
 
         elif choice == "3":
-            order = create_order()
-            print(f"Created Order: {order}")
+            try:
+                order = create_order()
+                print(f"Created Order: {order}")
+            except Exception as e:
+                print(f"Error creating order: {e}")
 
         elif choice == "4":
-            order_id = int(input("Enter Order ID: "))
-            menu_item_id = int(input("Enter Menu Item ID to add: "))
-            quantity = int(input("Enter quantity (default 1): ") or "1")
             try:
+                order_id = int(input("Enter Order ID: "))
+                menu_item_id = int(input("Enter Menu Item ID to add: "))
+                quantity_input = input("Enter quantity (default 1): ").strip()
+                quantity = int(quantity_input) if quantity_input else 1
                 add_item_to_order(order_id, menu_item_id, quantity)
                 print(f"Added item {menu_item_id} x{quantity} to order {order_id}")
             except ValueError as ve:
                 print(f"Error: {ve}")
+            except Exception as e:
+                print(f"Unexpected error: {e}")
 
         elif choice == "5":
-            order_id = int(input("Enter Order ID to view: "))
-            details = get_order_details(order_id)
+            try:
+                order_id = int(input("Enter Order ID to view: "))
+                details = get_order_details(order_id)
 
-            if not details:
-                print(f"No items found for order {order_id}")
-            else:
-                print(f"\nItems in Order {order_id}:")
-                grand_total = 0
-                for item in details:
-                    print(f"- {item['name']} | Qty: {item['quantity']} | Price: {item['price']:.2f} | Subtotal: {item['subtotal']:.2f}")
-                    grand_total += item["subtotal"]
-                print(f"\nGrand Total: {grand_total:.2f}")
+                if not details:
+                    print(f"No items found for order {order_id}")
+                else:
+                    table = []
+                    grand_total = 0
+                    for item in details:
+                        subtotal = item['price'] * item['quantity']
+                        table.append([
+                            item['name'],
+                            item['quantity'],
+                            f"{item['price']:.2f}",
+                            f"{subtotal:.2f}"
+                        ])
+                        grand_total += subtotal
+                    headers = ["Item", "Quantity", "Price ($)", "Subtotal ($)"]
+                    print(f"\nItems in Order {order_id}:")
+                    print(tabulate(table, headers=headers, tablefmt="fancy_grid"))
+                    print(f"\nGrand Total: {grand_total:.2f}")
+            except ValueError:
+                print("Invalid Order ID. Please enter a numeric value.")
+            except Exception as e:
+                print(f"Error retrieving order details: {e}")
 
         elif choice == "6":
             exit_program()
