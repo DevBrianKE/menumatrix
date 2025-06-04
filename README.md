@@ -228,5 +228,5 @@ Full-Stack Developer | Software Engineer | Data Enthusiast
 - **Portfolio:** [https://devbrianke.github.io/My-Portfolio/](https://devbrianke.github.io/My-Portfolio/)
 - **LinkedIn:** [https://www.linkedin.com/in/kipchumba-brian-3a3a41150/](https://www.linkedin.com/in/kipchumba-brian-3a3a41150/)
 - **GitHub:** [https://github.com/DevBrianKE](https://github.com/DevBrianKE)
--**Blog:** [My Hashnode Blog](https://devbrianke.hashnode.dev/)
+- **Blog:** [My Hashnode Blog](https://devbrianke.hashnode.dev/)
 
