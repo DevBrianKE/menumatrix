@@ -47,8 +47,8 @@
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/DevBrianHQ/menu-matrix-cli.git
-cd menu-matrix-cli
+git clone git@github.com:DevBrianKE/menumatrix.git
+cd menumatrix
 ```
 ### 2.Install dependencies:
 ```
