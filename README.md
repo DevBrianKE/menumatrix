@@ -121,13 +121,6 @@ def main():
 
 ```
 
-lib/helpers.py: Contains all helper functions called from the CLI, such as view_menu(), add_menu_item(), and place_order().
-```
-def view_menu():
-    items = session.query(MenuItem).all()
-    for item in items:
-        print(item)
-```
 ## lib/helpers.py
 
 Handles the logic:
